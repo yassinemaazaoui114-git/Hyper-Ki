@@ -1,6 +1,7 @@
 /* Ki blast + signature wave simulation: travel, cancels, collisions. */
 import {game,other} from '../core/state.js';
 import {rand} from '../core/math.js';
+import {ATK} from '../data/attacks.js';
 import {defMult} from './fighter.js';
 import {damage,checkKO} from './combat.js';
 import {sparks,burst,addPart} from './fx.js';
@@ -26,6 +27,17 @@ export function updateProjectiles(){
     }
     if(!dead){
       const o=other(p.owner);
+      // DEFLECT: swat a small blast back during your attack's active frames
+      if(!p.sig&&o.state==='attack'){
+        const a=ATK[o.atk];
+        if(o.atkT>a.start&&o.atkT<=a.start+a.act&&
+           Math.abs(p.x-o.x)<70&&p.y>o.y+30&&p.y<o.y+165*o.scl){
+          p.owner=o;p.vx=-Math.sign(p.vx)*18;p.deflected=true;p.dmg=12;
+          sparks(p.x,-p.y,'#fff',10,9);SFX.cancel();
+          game.dmgTexts.push({x:o.x,y:-(o.y+175*o.scl),txt:'DEFLECT!',t:20,big:false,chip:true});
+          continue;
+        }
+      }
       const hitW=p.sig?26+p.r:36;
       if(o.invuln<=0&&o.sidestepT<=6&&o.state!=='down'&&
          Math.abs(p.x-o.x)<hitW&&p.y>o.y+30&&p.y<o.y+165*o.scl){

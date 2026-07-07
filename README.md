@@ -49,6 +49,3 @@ Settings → Controls to view & rebind everything.
 See [ARCHITECTURE.md](ARCHITECTURE.md) — layered ES-module design
 (core → data → services → world → minigames/ai → flow → render → screens),
 data-driven content, and an input-intent boundary shared by humans and the CPU.
-
-Project docs: [hyperki_project.md](hyperki_project.md) ·
-[hyperki_roadmap.md](hyperki_roadmap.md) · [handoff.md](handoff.md)

@@ -39,5 +39,5 @@ export function drawControls(){
   ctx.strokeRect(W/2-180,ry-17,360,34);
   outlineText('RESET TO DEFAULTS',W/2,ry,16,rsel?'#ffd24a':'#c8c8dc');
   outlineText('toward+blast = SIGNATURE · hold blast = beam · guard+punch = THROW · charge+attack (hold) = CHARGED HEAVY (crushes guard!)',W/2,ry+38,12,'#9fb8d8');
-  outlineText('guard mid-attack = KI CANCEL · guard on hit = TELEPORT · guard when flying = VANISH · punch+kick = HYPER · ult key = ULTIMATE',W/2,ry+60,12,'#9fb8d8');
+  outlineText('guard mid-attack = KI CANCEL · guard on hit = TELEPORT · guard when flying = VANISH · strike blasts = DEFLECT · ult key = ULTIMATE',W/2,ry+60,12,'#9fb8d8');
 }

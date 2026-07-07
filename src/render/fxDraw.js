@@ -32,6 +32,10 @@ export function drawProjectiles(){
       ctx.beginPath();ctx.arc(p.x,-p.y,14,0,TAU);ctx.fill();
       ctx.fillStyle='#fff';
       ctx.beginPath();ctx.arc(p.x,-p.y,7,0,TAU);ctx.fill();
+      if(p.deflected){ // returned-to-sender ring
+        ctx.strokeStyle='#fff';ctx.lineWidth=3;
+        ctx.beginPath();ctx.arc(p.x,-p.y,20,0,TAU);ctx.stroke();
+      }
     }
     ctx.restore();
   }

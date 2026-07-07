@@ -17,6 +17,7 @@ export function moveRows(p){
    ['CHARGED HEAVY','hold '+L(B.charge)+' + hold '+L(B.punch)+'/'+L(B.kick)+' · crushes guard'],
    ['LAUNCHER → PURSUIT','toward+'+L(B.kick)+' then '+L(B.punch)],
    ['KI BLAST','tap '+L(B.blast)],
+   ['DEFLECT','strike an incoming blast with any attack'],
    ['SIGNATURE WAVE (1 KI)','toward+'+L(B.blast)+' (hold = charge)'],
    ['BEAM 1 / 2 (3/4 KI)','hold '+L(B.blast)+' / '+L(B.down)+'+hold '+L(B.blast)],
    ['CHARGE KI','hold '+L(B.charge)],
