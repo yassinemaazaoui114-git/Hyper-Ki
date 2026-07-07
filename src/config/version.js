@@ -1,1 +1,1 @@
-export const VERSION='v10 · PROJECTILE DEFLECT';
+export const VERSION='v11 · DIZZY STATE';

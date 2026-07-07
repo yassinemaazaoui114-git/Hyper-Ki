@@ -70,7 +70,8 @@ export function tryHit(f,o,a){
   f.atkHit=true;
   const cx=f.x+f.face*a.rng*0.7,cy=-(o.y+110*o.scl);
   // dodge-teleport counter: guard pressed just as the hit lands, costs 2 ki
-  if(o.ki>=2&&game.frame-o.lastGuardPress<=9&&o.y<=0&&o.state!=='hurt'&&o.state!=='launched'){
+  // (a dizzy fighter cannot counter — that's the whole point of dizzy)
+  if(o.ki>=2&&game.frame-o.lastGuardPress<=9&&o.y<=0&&o.state!=='hurt'&&o.state!=='launched'&&o.state!=='dizzy'){
     o.ki-=2;teleportCounter(o,f);return;
   }
   if(o.state==='block'&&o.y<=0){
@@ -110,11 +111,24 @@ export function tryHit(f,o,a){
     SFX.heavy();shake(8);game.flash=Math.max(game.flash,3);
   }else{
     if(o.y>0){o.state='launched';o.smashed=false;o.vy=Math.max(o.vy,7);o.vx=f.face*a.kb;}
-    else{o.state='hurt';o.stunT=a.st;o.vx=f.face*a.kb;}
+    else{
+      o.state='hurt';o.stunT=a.st;o.vx=f.face*a.kb;
+      // long combos overwhelm: grounded hit past the stun threshold = DIZZY
+      if(o.dizzyMeter>=150&&o.dizzyImmune<=0)enterDizzy(o);
+    }
     if(a.heavy){SFX.heavy();shake(7);game.flash=Math.max(game.flash,3);}
     else SFX.hit();
   }
   checkKO(o);
+}
+
+export function enterDizzy(f){
+  f.state='dizzy';f.dizzyT=120;f.animT=0;
+  f.dizzyMeter=0;f.dizzyImmune=600; // can't be re-dizzied for ~10s
+  f.vx=0;f.stunT=0;
+  setCallout('DIZZY!','#ffd24a');
+  SFX.dizzy();
+  burst(f.x,-(f.y+170*f.scl),'#ffd24a',12);
 }
 
 export function damage(o,dmg,opt){
@@ -136,6 +150,8 @@ export function damage(o,dmg,opt){
     if(o.state==='hurt'||o.state==='launched'||game.frame-att.comboLast<=22)att.comboHits++;
     else{att.comboHits=1;att.comboDmg=0;}
     att.comboDmg+=dmg;att.comboLast=game.frame;
+    // stun meter builds from real damage taken (decays when left alone)
+    o.dizzyMeter+=dmg;
   }
 }
 

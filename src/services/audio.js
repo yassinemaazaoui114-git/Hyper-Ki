@@ -65,6 +65,7 @@ export const SFX={
   beam(){tone(70,0.9,'sawtooth',0.35,40);noiseHit(0.9,0.35,300);},
   tp(){tone(400,0.15,'sine',0.25,900);},
   cancel(){tone(750,0.09,'square',0.18,600);noiseHit(0.05,0.15,4000);},
+  dizzy(){tone(620,0.5,'sine',0.22,-320);tone(780,0.5,'sine',0.16,-380,audioTime()+0.12);},
   select(){tone(600,0.07,'square',0.16,300);},
   confirm(){tone(500,0.1,'square',0.18,400);tone(760,0.12,'square',0.18,400,audioTime()+0.08);},
   announce(){tone(200,0.3,'sawtooth',0.28,-120);noiseHit(0.3,0.3,700);},

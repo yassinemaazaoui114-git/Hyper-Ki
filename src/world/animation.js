@@ -8,6 +8,7 @@ export function targetPose(f){
     case 'dash':case 'rushdash':return POSES.dash;
     case 'attack':return POSES[ATK[f.atk].pose];
     case 'hurt':return POSES.hurt;
+    case 'dizzy':return (Math.floor(f.animT/14)%2)?POSES.hurt:POSES.dizzy; // woozy sway
     case 'block':return POSES.block;
     case 'charge':case 'transforming':return POSES.charge;
     case 'heavyWind':return POSES.heavyWind;

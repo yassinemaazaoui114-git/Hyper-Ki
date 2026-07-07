@@ -17,6 +17,7 @@ export function makeFighter(ci,x,face,isCPU){
     frame:0,aiT:0,aiPlan:'approach',aiGuard:0,
     comboHits:0,comboDmg:0,comboLast:-99,comboFade:null,
     vanishW:0,vanishFrom:null,heavyBtn:null,heavyPow:0,
+    dizzyMeter:0,dizzyT:0,dizzyImmune:0,
     chargeOsc:null,pose:clonePose(POSES.idle),intent:{},
   };
 }

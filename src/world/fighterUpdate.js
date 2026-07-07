@@ -21,6 +21,10 @@ export function updateFighter(f,o){
   if(f.sidestepT>0)f.sidestepT--;
   if(f.vanishW>0)f.vanishW--;
   if(f.blockstun>0)f.blockstun--;
+  if(f.dizzyImmune>0)f.dizzyImmune--;
+  // stun meter cools off once you're left alone
+  if(f.dizzyMeter>0&&game.frame-f.lastHitFrame>40)
+    f.dizzyMeter=Math.max(0,f.dizzyMeter-1.2);
   if(f.state!=='charge'&&f.chargeOsc)stopChargeHum(f);
 
   // physics
@@ -75,6 +79,15 @@ export function updateFighter(f,o){
     case 'hurt':
       f.stunT--;
       if(f.stunT<=0)f.state='idle';
+      updatePose(f);return;
+    case 'dizzy':
+      f.dizzyT--;
+      // mash to shake it off faster
+      if(it.punchP||it.kickP||it.guardP||it.blastP||it.up||it.down)f.dizzyT-=6;
+      // stars circling the head
+      if(f.frame%5===0)
+        addPart(f.x+rand(-26,26),-(f.y+182*f.scl)+rand(-8,8),rand(-1,1),rand(-1,0),18,'#ffd24a',rand(2,4),0,true);
+      if(f.dizzyT<=0)f.state='idle';
       updatePose(f);return;
     case 'launched':{
       const vc=1+0.5*game.vanishChain;

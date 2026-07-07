@@ -18,6 +18,7 @@ export function moveRows(p){
    ['LAUNCHER → PURSUIT','toward+'+L(B.kick)+' then '+L(B.punch)],
    ['KI BLAST','tap '+L(B.blast)],
    ['DEFLECT','strike an incoming blast with any attack'],
+   ['DIZZY','long combos stagger you — mash to recover!'],
    ['SIGNATURE WAVE (1 KI)','toward+'+L(B.blast)+' (hold = charge)'],
    ['BEAM 1 / 2 (3/4 KI)','hold '+L(B.blast)+' / '+L(B.down)+'+hold '+L(B.blast)],
    ['CHARGE KI','hold '+L(B.charge)],

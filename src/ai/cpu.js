@@ -26,6 +26,12 @@ export function aiUpdate(f,o){
   if(f.canPursue>0&&o.state==='launched')it.punchP=true;
   // vanish out of heavy knockback
   if(f.vanishW>0&&f.ki>=1+0.5*game.vanishChain&&Math.random()<[0.04,0.09,0.16][game.diff])it.guardP=true;
+  // mash out of dizzy
+  if(f.state==='dizzy'&&Math.random()<[0.10,0.22,0.38][game.diff])it.punchP=true;
+  // opponent is dizzy: free punish — wind up a guard-crushing heavy
+  if(o.state==='dizzy'&&f.state!=='attack'&&f.state!=='heavyWind'){
+    f.aiPlan=d<260?'heavy':'approach';f.aiT=30;
+  }
   f.aiT--;
   if(f.aiT<=0){
     f.aiT=20+rand(0,25);
