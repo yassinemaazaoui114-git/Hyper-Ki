@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>HYPER KI LEGENDS — a Budokai-style 2.5D fighter</title>
+<style>
+html,body{margin:0;padding:0;background:#000;height:100%;overflow:hidden}
+.wrap{display:flex;align-items:center;justify-content:center;height:100vh;background:#000}
+#cv{display:block;background:#000}
+</style>
+</head>
+<body>
+<div class="wrap"><canvas id="cv" width="1280" height="720"></canvas></div>
+<!--
+  HYPER KI LEGENDS — modular ES-module build.
+  Entry point: src/main.js (requires a local server; ES modules do not load
+  over file://). The previous single-file build is preserved as legacy.html.
+-->
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

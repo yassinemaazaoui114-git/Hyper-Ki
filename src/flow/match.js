@@ -1,0 +1,137 @@
+/* Match lifecycle: setup, the fight step, pause menu, KO, and victory. */
+import {game,other,setAnn} from '../core/state.js';
+import {clamp,rand} from '../core/math.js';
+import {CHARS} from '../data/characters.js';
+import {TIMES} from '../data/modes.js';
+import {pressed} from '../input/keyboard.js';
+import {humanIntent} from '../input/intents.js';
+import {aiUpdate} from '../ai/cpu.js';
+import {makeFighter} from '../world/fighter.js';
+import {updateFighter} from '../world/fighterUpdate.js';
+import {updatePose} from '../world/animation.js';
+import {updateProjectiles} from '../world/projectiles.js';
+import {updateBeams} from '../world/beams.js';
+import {updateCam} from '../world/camera.js';
+import {POSES,clonePose} from '../data/poses.js';
+import {SFX,stopChargeHum,tone,audioTime} from '../services/audio.js';
+
+export function startMatch(){
+  game.p1=makeFighter(game.p1i,-260,1,false);
+  game.p2=makeFighter(game.p2i,260,-1,game.mode!=='2p');
+  game.projs.length=0;game.beams.length=0;game.parts.length=0;game.ghosts.length=0;
+  game.dmgTexts.length=0;
+  game.timeLimit=TIMES[game.timeIdx];
+  game.timer=game.timeLimit===Infinity?Infinity:game.timeLimit;
+  game.timerAcc=0;
+  game.cam.x=0;game.cam.y=0;game.cam.z=1;game.cam.shake=0;
+  game.clash=null;game.rush=null;game.ult=null;game.winner=null;
+  game.vanishChain=0;game.vanishFxT=0;
+  game.ann=null;game.callout=null;game.paused=false;
+  game.state='vs';game.t=0;
+}
+
+export function stepReady(){
+  game.t++;
+  updatePose(game.p1);updatePose(game.p2);
+  if(game.t===1)setAnn('READY?',55,'#fff');
+  if(game.t===62){setAnn('FIGHT!',35,'#ffd24a');SFX.announce();}
+  if(game.t>=95)game.state='fight';
+  updateCam();
+}
+
+export function stepFight(){
+  const p1=game.p1,p2=game.p2;
+  if(game.paused){stepPauseMenu();return;}
+  if(pressed.start||pressed.back){game.paused=true;game.pauseSel=0;game.pauseView=0;SFX.select();return;}
+  humanIntent(p1,'');
+  if(game.mode==='2p')humanIntent(p2,'2');
+  else aiUpdate(p2,p1);
+  updateFighter(p1,p2);
+  updateFighter(p2,p1);
+  // push overlapping fighters apart
+  if(p1.y<=0&&p2.y<=0&&p1.state!=='down'&&p2.state!=='down'){
+    const dx=p2.x-p1.x;
+    if(Math.abs(dx)<46){
+      const push=(46-Math.abs(dx))/2*(dx>=0?1:-1);
+      p1.x-=push;p2.x+=push;
+      p1.x=clamp(p1.x,-1080,1080);p2.x=clamp(p2.x,-1080,1080);
+    }
+  }
+  updateProjectiles();
+  updateBeams();
+  // combo bookkeeping: a combo ends once the victim regains control
+  for(const f of [p1,p2]){
+    if(f.comboHits>0){
+      const d=other(f);
+      if(game.frame-f.comboLast>28&&d.state!=='hurt'&&d.state!=='launched'){
+        if(f.comboHits>=2)f.comboFade={hits:f.comboHits,dmg:Math.round(f.comboDmg),t:0};
+        f.comboHits=0;f.comboDmg=0;
+      }
+    }
+    if(f.comboFade&&++f.comboFade.t>50)f.comboFade=null;
+  }
+  updateCam();
+  if(game.timeLimit!==Infinity){
+    game.timerAcc++;
+    if(game.timerAcc>=60){
+      game.timerAcc=0;game.timer--;
+      if(game.timer<=0)timeUp();
+    }
+  }
+}
+
+export function stepPauseMenu(){
+  if(game.pauseView===1){ // move list open
+    if(pressed.back||pressed.start){game.pauseView=0;SFX.select();}
+    return;
+  }
+  if(pressed.up||pressed.up2){game.pauseSel=(game.pauseSel+2)%3;SFX.select();}
+  if(pressed.down||pressed.down2){game.pauseSel=(game.pauseSel+1)%3;SFX.select();}
+  if(pressed.back){game.paused=false;SFX.select();return;}
+  if(pressed.start||pressed.punch||pressed.punch2){
+    SFX.confirm();
+    if(game.pauseSel===0)game.paused=false;
+    else if(game.pauseSel===1)game.pauseView=1;
+    else{
+      game.paused=false;
+      stopChargeHum(game.p1);stopChargeHum(game.p2);
+      game.state='select';game.selPhase=0;
+    }
+  }
+}
+
+export function timeUp(){
+  const p1=game.p1,p2=game.p2;
+  const r1=p1.hp/p1.maxhp,r2=p2.hp/p2.maxhp;
+  game.winner=r1>=r2?p1:p2;
+  game.koMode='time';game.state='ko';game.koT=0;
+  setAnn('TIME UP!',999,'#ffd24a');SFX.announce();
+  stopChargeHum(p1);stopChargeHum(p2);
+}
+
+export function stepKO(){
+  const p1=game.p1,p2=game.p2;
+  game.koT++;
+  if(game.koT%3===0){ // slow motion
+    p1.intent={};p2.intent={};
+    updateFighter(p1,p2);updateFighter(p2,p1);
+  }
+  const loser=game.winner===p1?p2:p1;
+  game.cam.x+=(clamp(loser.x,-720,720)-game.cam.x)*0.1;
+  game.cam.z+=(1.15-game.cam.z)*0.06;
+  if(game.koT>=(game.koMode==='ko'?150:90)){
+    game.state='victory';game.t=0;game.ann=null;
+    game.winner.state='victory';
+    game.winner.pose=clonePose(POSES.idle);
+    tone(392,0.15,'square',0.2,0);
+    tone(523,0.15,'square',0.2,0,audioTime()+0.15);
+    tone(659,0.35,'square',0.2,0,audioTime()+0.3);
+  }
+}
+
+export function stepVictory(){
+  game.t++;
+  updatePose(game.winner);
+  if(pressed.start){SFX.confirm();startMatch();}
+  if(pressed.back){SFX.select();game.state='select';game.selPhase=0;}
+}

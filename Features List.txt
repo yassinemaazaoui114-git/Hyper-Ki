@@ -1,0 +1,41 @@
+done 🟢 Throws / guard breaks — grab beats block, so turtling has a counter (rock-paper-scissors completion)
+done 🟢 Combo counter + damage numbers — HUD shows "5 HITS! 214 dmg", combo scaling for balance
+done 🟡 Ki-cancels — spend ki to cancel attack recovery into more attacks (the core of high-level Budokai combos)
+done 🟡 Vanish battles — after a heavy knockback, both players can spend ki to teleport-counter repeatedly in a rapid exchange until someone runs dry
+ — hold punch/kick for a guard-crushing version
+🟢 Projectile deflect — well-timed attack knocks ki blasts back at the sender
+🟡 Aerial combos & air dash — proper air juggle strings, not just one air kick
+🟢 Dizzy/stagger state — long combos briefly stun, rewarding aggression
+🟡 Signature wave clash — two signature waves colliding triggers a mini power struggle (like beams already do)
+2. Character content
+🟡 Roster expansion — 2–4 new original fighters (androids/brawler archetype, small-and-fast archetype, giant grappler, energy specialist)
+🟡 More transformation stages — 3rd/4th forms for the main duo, one-time "perfect form" for the villain
+🔴 Capsule/skill customization — pre-match loadout: equip abilities, stat boosts with trade-offs, saved per character (this was Budokai 3's signature meta-system)
+🟢 Alternate color palettes — P1 vs P2 same-character matches, unlockable colors
+🟡 Per-character gimmicks — e.g., mentor slowly regens gray health, villain steals ki on hit
+3. Game modes
+🔴 Story/adventure mode — the "Dragon Universe" analog: fly over a world map, choose encounters, branching fights, unlock characters and secrets per playthrough
+🟡 Arcade ladder — fight the whole roster in sequence, difficulty ramps, ending screen per character
+🟡 Tournament mode — 8-slot bracket, optional ring-out rules on a special arena stage
+🟡 Survival mode — endless opponents, health only partially restores between fights, high-score table
+🟡 Training mode — dummy behavior settings (block all / counter / record), input display, hitbox toggle, infinite ki option
+🟢 Challenge missions — "win using only ki blasts", "win without guarding", etc., with completion tracking
+4. Progression & meta
+🟡 Unlockables — characters, stages, and colors locked behind arcade/story completion
+🟡 Currency + shop — earn zeni-analog per match, spend in a capsule shop (pairs with #12)
+🟢 Player profile & stats — win/loss record, favorite character, total ultimates landed (localStorage)
+🟢 Achievements — pop-up toasts, gallery screen
+5. Presentation & polish
+🟡 Unique ultimate cinematics per character — right now all four share one beam cinematic; give each a distinct animation (giant sphere from the sky, close-range explosion, rapid-fire barrage, single piercing shot)
+🟢 Character intros & win poses per matchup — special quotes when rivals fight each other
+🟡 Stage destruction — craters on smash-downs, breakable rocks, cracked ground persisting through the match
+🔴 Stage transitions — heavy knockback near the wall smashes the opponent into a different area of the stage (Budokai 3 had this; big wow factor)
+🟢 Dramatic finish — slow-mo + zoom + special KO screen when the match ends with an ultimate or beam
+🟢 Announcer via speech synthesis — "READY… FIGHT!", round callouts using the browser's built-in voice
+🟢 Optional BGM toggle — bring music back as an off-by-default setting since you removed it
+🟡 Instant replay on KO — record last 3 seconds of inputs, replay the finish
+6. Input & platform
+🟡 Gamepad support — Gamepad API, two controllers for versus, rebindable buttons (biggest quality jump for 2P)
+🟡 Touch controls — on-screen buttons so it's playable on a phone
+🔴 Online versus — WebRTC peer-to-peer with rollback-lite; genuinely hard but possible in-browser
+🟢 Adaptive AI / more difficulty tiers — "Very Hard" + AI that adapts to your habits (punishes blast spam, etc.)
