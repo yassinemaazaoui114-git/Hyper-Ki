@@ -1,1 +1,1 @@
-export const VERSION='v12 · TRAINING MODE';
+export const VERSION='v13 · DUMMY BEHAVIORS';

@@ -6,6 +6,7 @@ import {TIMES} from '../data/modes.js';
 import {pressed} from '../input/keyboard.js';
 import {humanIntent} from '../input/intents.js';
 import {aiUpdate} from '../ai/cpu.js';
+import {dummyIntent,DUMMY_BEHAVIORS} from '../ai/dummy.js';
 import {makeFighter} from '../world/fighter.js';
 import {updateFighter} from '../world/fighterUpdate.js';
 import {updatePose} from '../world/animation.js';
@@ -45,7 +46,7 @@ export function stepFight(){
   if(pressed.start||pressed.back){game.paused=true;game.pauseSel=0;game.pauseView=0;SFX.select();return;}
   humanIntent(p1,'');
   if(game.mode==='2p')humanIntent(p2,'2');
-  else if(game.mode==='train')p2.intent={}; // idle dummy
+  else if(game.mode==='train')dummyIntent(p2,p1); // training dummy behavior
   else aiUpdate(p2,p1);
   updateFighter(p1,p2);
   updateFighter(p2,p1);
@@ -95,15 +96,23 @@ export function stepPauseMenu(){
     if(pressed.back||pressed.start){game.pauseView=0;SFX.select();}
     return;
   }
-  if(pressed.up||pressed.up2){game.pauseSel=(game.pauseSel+2)%3;SFX.select();}
-  if(pressed.down||pressed.down2){game.pauseSel=(game.pauseSel+1)%3;SFX.select();}
+  const train=game.mode==='train';
+  const n=train?4:3;               // extra DUMMY row in training
+  const quitIdx=n-1;
+  if(pressed.up||pressed.up2){game.pauseSel=(game.pauseSel+n-1)%n;SFX.select();}
+  if(pressed.down||pressed.down2){game.pauseSel=(game.pauseSel+1)%n;SFX.select();}
+  // cycle dummy behavior on its row
+  if(train&&game.pauseSel===2){
+    const d=((pressed.right||pressed.right2)?1:0)-((pressed.left||pressed.left2)?1:0);
+    if(d){game.dummyBehavior=(game.dummyBehavior+d+DUMMY_BEHAVIORS.length)%DUMMY_BEHAVIORS.length;SFX.select();}
+  }
   if(pressed.back){game.paused=false;SFX.select();return;}
   if(pressed.start||pressed.punch||pressed.punch2){
-    SFX.confirm();
-    if(game.pauseSel===0)game.paused=false;
-    else if(game.pauseSel===1)game.pauseView=1;
-    else{
-      game.paused=false;
+    if(game.pauseSel===0){SFX.confirm();game.paused=false;}
+    else if(game.pauseSel===1){SFX.confirm();game.pauseView=1;}
+    else if(train&&game.pauseSel===2){game.dummyBehavior=(game.dummyBehavior+1)%DUMMY_BEHAVIORS.length;SFX.select();}
+    else if(game.pauseSel===quitIdx){
+      SFX.confirm();game.paused=false;
       stopChargeHum(game.p1);stopChargeHum(game.p2);
       game.state='select';game.selPhase=0;
     }

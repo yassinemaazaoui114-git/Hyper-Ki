@@ -11,6 +11,7 @@ import {drawParticles,drawProjectiles,drawBeams,drawClashWorld,drawSpeedlines} f
 import {drawHUD,drawAnnouncer,drawCallout} from '../render/hud.js';
 import {outlineText} from '../render/text.js';
 import {drawMoveList} from './moveList.js';
+import {DUMMY_BEHAVIORS} from '../ai/dummy.js';
 
 export function drawArena(){
   const p1=game.p1,p2=game.p2;
@@ -66,16 +67,24 @@ export function drawArena(){
   if(game.paused){
     if(game.pauseView===1){drawMoveList();return;}
     ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fillRect(0,0,W,H);
-    outlineText('PAUSED',W/2,H/2-130,56,'#fff','center',true);
-    ['RESUME','MOVE LIST','QUIT MATCH'].forEach((s,i)=>{
+    const train=game.mode==='train';
+    outlineText('PAUSED',W/2,H/2-150,52,'#fff','center',true);
+    const items=train
+      ? ['RESUME','MOVE LIST','DUMMY:  '+DUMMY_BEHAVIORS[game.dummyBehavior],'QUIT MATCH']
+      : ['RESUME','MOVE LIST','QUIT MATCH'];
+    items.forEach((s,i)=>{
       const sel=game.pauseSel===i;
-      const y=H/2-40+i*60;
+      const dummyRow=train&&i===2;
+      const y=H/2-70+i*52;
       if(sel){
         ctx.fillStyle='rgba(255,210,74,0.16)';
-        ctx.fillRect(W/2-190,y-26,380,52);
+        ctx.fillRect(W/2-230,y-22,460,44);
       }
-      outlineText((sel?'▶  ':'')+s+(sel?'  ◀':''),W/2,y,sel?30:24,sel?'#ffd24a':'#c8c8dc');
+      const label=dummyRow?((sel?'◀  ':'')+s+(sel?'  ▶':''))
+                          :((sel?'▶  ':'')+s+(sel?'  ◀':''));
+      outlineText(label,W/2,y,sel?27:22,sel?'#ffd24a':'#c8c8dc');
     });
-    outlineText('↑↓ select · ENTER confirm · ESC resume',W/2,H/2+160,16,'#e8e8f0');
+    outlineText(train?'↑↓ select · ←→ change dummy · ENTER confirm · ESC resume'
+                     :'↑↓ select · ENTER confirm · ESC resume',W/2,H/2+170,15,'#e8e8f0');
   }
 }
