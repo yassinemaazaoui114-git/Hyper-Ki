@@ -50,6 +50,15 @@ export function drawArena(){
   drawSpeedlines();
   drawHUD();
   if(game.mode==='train'){outlineText('TRAINING',W/2,86,15,'#8fd4ff');drawInputDisplay();}
+  if(game.state==='ko'&&game.koDramatic){
+    // cinematic letterbox bars sliding in + vignette
+    const barH=88*Math.min(1,game.koT/22);
+    ctx.fillStyle='#000';
+    ctx.fillRect(0,0,W,barH);ctx.fillRect(0,H-barH,W,barH);
+    const g=ctx.createRadialGradient(W/2,H/2,H*0.28,W/2,H/2,H*0.78);
+    g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,0.5)');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  }
   drawAnnouncer();
   drawCallout();
   if(game.state==='clash'){

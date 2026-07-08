@@ -19,6 +19,7 @@ export const game={
   ann:null,callout:null,flash:0,
   clash:null,rush:null,ult:null,
   winner:null,koT:0,koMode:'ko',paused:false,
+  koDramatic:false,bigHit:false,
   vanishChain:0,vanishFxT:0,
 };
 

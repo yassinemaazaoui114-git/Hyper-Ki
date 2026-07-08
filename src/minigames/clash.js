@@ -43,6 +43,7 @@ export function stepClash(){
     game.beams.length=0;game.clash=null;
     game.state='fight';
     p1.state='idle';p2.state='idle';
+    game.bigHit=true;
     checkKO(loser);
   }
 }

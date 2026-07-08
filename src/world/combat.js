@@ -161,14 +161,16 @@ export function damage(o,dmg,opt){
 }
 
 export function checkKO(loser){
+  const big=game.bigHit;game.bigHit=false; // finishing blow was an ult/beam/clash
   if(loser.hp>0)return false;
   if(game.mode==='train'){loser.hp=1;return false;} // no KO in training
   const w=other(loser);
   game.winner=w;game.koMode='ko';game.state='ko';game.koT=0;
+  game.koDramatic=big;
   loser.state='launched';loser.smashed=false;
   loser.vy=Math.max(loser.vy,12);loser.y=Math.max(loser.y,0.01);
   loser.vx=(loser.x<w.x?-1:1)*9;
-  setAnn('K.O.!',999,'#ff5030');SFX.ko();shake(14);game.flash=8;
+  setAnn(big?'FINISH!':'K.O.!',999,'#ff5030');SFX.ko();shake(14);game.flash=8;
   stopChargeHum(game.p1);stopChargeHum(game.p2);
   return true;
 }

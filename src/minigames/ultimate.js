@@ -78,6 +78,7 @@ export function stepUlt(){
       u2.def.vy=13;u2.def.y=Math.max(u2.def.y,0.01);
       u2.def.x=clamp(u2.att.x+u2.att.face*300,-1080,1080);
       u2.def.vx=u2.att.face*10;
+      game.bigHit=true;
       checkKO(u2.def);
     }
   }

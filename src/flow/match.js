@@ -28,6 +28,7 @@ export function startMatch(){
   game.timerAcc=0;
   game.cam.x=0;game.cam.y=0;game.cam.z=1;game.cam.shake=0;
   game.clash=null;game.rush=null;game.ult=null;game.winner=null;
+  game.koDramatic=false;game.bigHit=false;
   game.vanishChain=0;game.vanishFxT=0;
   game.ann=null;game.callout=null;game.paused=false;
   game.state='vs';game.t=0;
@@ -127,23 +128,27 @@ export function timeUp(){
   const p1=game.p1,p2=game.p2;
   const r1=p1.hp/p1.maxhp,r2=p2.hp/p2.maxhp;
   game.winner=r1>=r2?p1:p2;
-  game.koMode='time';game.state='ko';game.koT=0;
+  game.koMode='time';game.state='ko';game.koT=0;game.koDramatic=false;
   setAnn('TIME UP!',999,'#ffd24a');SFX.announce();
   stopChargeHum(p1);stopChargeHum(p2);
 }
 
 export function stepKO(){
   const p1=game.p1,p2=game.p2;
+  const dramatic=game.koDramatic;
   game.koT++;
-  if(game.koT%3===0){ // slow motion
+  // dramatic finishes crawl in deep slow-mo, then ease back to normal
+  const slowMod=dramatic?(game.koT<130?5:2):3;
+  if(game.koT%slowMod===0){
     p1.intent={};p2.intent={};
     updateFighter(p1,p2);updateFighter(p2,p1);
   }
   const loser=game.winner===p1?p2:p1;
-  game.cam.x+=(clamp(loser.x,-720,720)-game.cam.x)*0.1;
-  game.cam.z+=(1.15-game.cam.z)*0.06;
-  if(game.koT>=(game.koMode==='ko'?150:90)){
-    game.state='victory';game.t=0;game.ann=null;
+  const tz=dramatic?1.45:1.15;
+  game.cam.x+=(clamp(loser.x,-620,620)-game.cam.x)*0.1;
+  game.cam.z+=(tz-game.cam.z)*(dramatic?0.05:0.06);
+  if(game.koT>=(dramatic?210:(game.koMode==='ko'?150:90))){
+    game.state='victory';game.t=0;game.ann=null;game.koDramatic=false;
     game.winner.state='victory';
     game.winner.pose=clonePose(POSES.idle);
     tone(392,0.15,'square',0.2,0);

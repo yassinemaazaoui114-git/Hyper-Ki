@@ -40,6 +40,7 @@ export function updateBeams(){
       }
       shake(10);game.flash=Math.max(game.flash,4);
       b.state='done';
+      game.bigHit=true;
       checkKO(o);
       continue;
     }
