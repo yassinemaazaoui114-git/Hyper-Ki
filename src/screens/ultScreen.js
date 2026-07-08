@@ -8,6 +8,7 @@ import {ROUND_OPTS} from '../minigames/ultimate.js';
 import {drawFighterView,drawAuraShape,fakeFighter} from '../render/fighterDraw.js';
 import {drawCallout} from '../render/hud.js';
 import {outlineText} from '../render/text.js';
+import {drawUltFire} from './ultCinematics.js';
 
 export function drawUlt(){
   const u=game.ult;
@@ -32,23 +33,7 @@ export function drawUlt(){
     drawFighterView(fakeFighter(u.def.ci,u.def.form,'block',-1));
     ctx.restore();
   }else{
-    // giant beam across the screen
-    ctx.save();
-    const bw2=90+Math.sin(u.t*0.4)*14;
-    ctx.globalCompositeOperation='lighter';
-    ctx.fillStyle=auraColor(u.att);
-    ctx.globalAlpha=0.5;ctx.fillRect(140,H*0.55-bw2,W,bw2*2);
-    ctx.globalAlpha=1;ctx.fillStyle='#fff';
-    ctx.fillRect(140,H*0.55-bw2*0.45,W,bw2*0.9);
-    ctx.restore();
-    ctx.save();ctx.translate(180,H*0.85);ctx.scale(2.1,2.1);
-    drawFighterView(fakeFighter(u.att.ci,u.att.form,'beam',1));
-    ctx.restore();
-    if(u.t>20){
-      ctx.save();ctx.translate(W-260,H*0.55);ctx.scale(1.6,1.6);
-      drawFighterView({...fakeFighter(u.def.ci,u.def.form,'launched',-1),flashT:u.t%4});
-      ctx.restore();
-    }
+    drawUltFire(u);
   }
   outlineText(u.att.char.ult,W/2,80,48,auraColor(u.att),'center',true);
   if(u.phase==='round'||u.phase==='reveal'){
