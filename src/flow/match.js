@@ -7,6 +7,7 @@ import {pressed} from '../input/keyboard.js';
 import {humanIntent} from '../input/intents.js';
 import {aiUpdate} from '../ai/cpu.js';
 import {dummyIntent,DUMMY_BEHAVIORS} from '../ai/dummy.js';
+import {recordInput} from '../world/inputlog.js';
 import {makeFighter} from '../world/fighter.js';
 import {updateFighter} from '../world/fighterUpdate.js';
 import {updatePose} from '../world/animation.js';
@@ -21,6 +22,7 @@ export function startMatch(){
   game.p2=makeFighter(game.p2i,260,-1,game.mode!=='2p');
   game.projs.length=0;game.beams.length=0;game.parts.length=0;game.ghosts.length=0;
   game.dmgTexts.length=0;
+  game.inputLog.length=0;game.frameAdv=null;
   game.timeLimit=game.mode==='train'?Infinity:TIMES[game.timeIdx];
   game.timer=game.timeLimit===Infinity?Infinity:game.timeLimit;
   game.timerAcc=0;
@@ -80,6 +82,8 @@ export function stepFight(){
         if(f.hp>=f.maxhp)f.gray=0;
       }
     }
+    recordInput();
+    if(game.frameAdv&&++game.frameAdv.t>90)game.frameAdv=null;
   }
   updateCam();
   if(game.timeLimit!==Infinity){

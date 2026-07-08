@@ -88,6 +88,11 @@ export function tryHit(f,o,a){
     damage(o,a.dmg*0.07*atkMult(f)/defMult(o),{gray:0,chip:1});
     o.blockstun=10;o.vx=f.face*4;f.vx=-f.face*2;
     sparks(cx,cy,'#6fc8ff',6,7);SFX.guard();
+    // training aid: frame advantage on block (defender stun − attacker recovery)
+    if(game.mode==='train'&&f===game.p1){
+      const atkRecover=(a.start+a.act+a.rec)-f.atkT;
+      game.frameAdv={val:Math.round(o.blockstun-atkRecover),t:0};
+    }
     return;
   }
   let dmg=a.dmg*atkMult(f)/defMult(o);

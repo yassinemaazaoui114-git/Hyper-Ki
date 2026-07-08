@@ -12,6 +12,7 @@ export const game={
   rbRow:0,rbCol:0,rbWait:false,pauseView:0,
   // world entities
   projs:[],beams:[],parts:[],ghosts:[],dmgTexts:[],
+  inputLog:[],frameAdv:null,
   cam:{x:0,y:0,z:1,shake:0},
   // match
   timer:99,timerAcc:0,

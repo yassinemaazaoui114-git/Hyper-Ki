@@ -12,6 +12,7 @@ import {drawHUD,drawAnnouncer,drawCallout} from '../render/hud.js';
 import {outlineText} from '../render/text.js';
 import {drawMoveList} from './moveList.js';
 import {DUMMY_BEHAVIORS} from '../ai/dummy.js';
+import {drawInputDisplay} from './inputDisplay.js';
 
 export function drawArena(){
   const p1=game.p1,p2=game.p2;
@@ -48,7 +49,7 @@ export function drawArena(){
   worldEnd();
   drawSpeedlines();
   drawHUD();
-  if(game.mode==='train')outlineText('TRAINING',W/2,86,15,'#8fd4ff');
+  if(game.mode==='train'){outlineText('TRAINING',W/2,86,15,'#8fd4ff');drawInputDisplay();}
   drawAnnouncer();
   drawCallout();
   if(game.state==='clash'){
