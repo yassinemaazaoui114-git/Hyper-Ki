@@ -20,7 +20,7 @@ export function startMatch(){
   game.p2=makeFighter(game.p2i,260,-1,game.mode!=='2p');
   game.projs.length=0;game.beams.length=0;game.parts.length=0;game.ghosts.length=0;
   game.dmgTexts.length=0;
-  game.timeLimit=TIMES[game.timeIdx];
+  game.timeLimit=game.mode==='train'?Infinity:TIMES[game.timeIdx];
   game.timer=game.timeLimit===Infinity?Infinity:game.timeLimit;
   game.timerAcc=0;
   game.cam.x=0;game.cam.y=0;game.cam.z=1;game.cam.shake=0;
@@ -45,6 +45,7 @@ export function stepFight(){
   if(pressed.start||pressed.back){game.paused=true;game.pauseSel=0;game.pauseView=0;SFX.select();return;}
   humanIntent(p1,'');
   if(game.mode==='2p')humanIntent(p2,'2');
+  else if(game.mode==='train')p2.intent={}; // idle dummy
   else aiUpdate(p2,p1);
   updateFighter(p1,p2);
   updateFighter(p2,p1);
@@ -69,6 +70,15 @@ export function stepFight(){
       }
     }
     if(f.comboFade&&++f.comboFade.t>50)f.comboFade=null;
+  }
+  // training: fighters heal back to full when left alone so practice never ends
+  if(game.mode==='train'){
+    for(const f of [p1,p2]){
+      if(game.frame-f.lastHitFrame>50&&f.hp<f.maxhp){
+        f.hp=Math.min(f.maxhp,f.hp+f.maxhp/90);
+        if(f.hp>=f.maxhp)f.gray=0;
+      }
+    }
   }
   updateCam();
   if(game.timeLimit!==Infinity){

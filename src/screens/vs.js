@@ -26,5 +26,6 @@ export function drawVS(){
   outlineText('VS',0,0,120,'#ff5030','center',true);
   ctx.restore();
   const tl=game.timeLimit===Infinity?'∞':game.timeLimit+'s';
-  outlineText((game.mode==='2p'?'2P VERSUS':DIFF[game.diff].name)+' · '+STAGES[game.stageI].name+' · TIME '+tl,W/2,H-50,18,'#e8e8f0');
+  const modeTxt=game.mode==='train'?'TRAINING':game.mode==='2p'?'2P VERSUS':DIFF[game.diff].name;
+  outlineText(modeTxt+' · '+STAGES[game.stageI].name+' · TIME '+tl,W/2,H-50,18,'#e8e8f0');
 }

@@ -11,10 +11,10 @@ export function drawMSettings(){
   drawSky();
   ctx.fillStyle='rgba(12,10,26,0.66)';ctx.fillRect(0,0,W,H);
   outlineText('MATCH SETTINGS',W/2,72,42,'#ffd24a','center',true);
-  outlineText(CHARS[game.p1i].name+'   VS   '+CHARS[game.p2i].name+
-    (game.mode==='2p'?'  ·  2 PLAYERS':'  ·  VS CPU'),W/2,128,20,'#cfe8ff');
-  const rows=[['STAGE',STAGES[game.stageI].name],
-              ['TIME',TIMES[game.timeIdx]===Infinity?'∞  NO LIMIT':TIMES[game.timeIdx]+' SECONDS']];
+  const modeLabel=game.mode==='train'?'  ·  TRAINING':game.mode==='2p'?'  ·  2 PLAYERS':'  ·  VS CPU';
+  outlineText(CHARS[game.p1i].name+'   VS   '+CHARS[game.p2i].name+modeLabel,W/2,128,20,'#cfe8ff');
+  const rows=[['STAGE',STAGES[game.stageI].name]];
+  if(game.mode!=='train')rows.push(['TIME',TIMES[game.timeIdx]===Infinity?'∞  NO LIMIT':TIMES[game.timeIdx]+' SECONDS']);
   if(game.mode==='1p')rows.push(['DIFFICULTY',DIFF[game.selDiff].name]);
   rows.forEach((r,i)=>{
     const sel=game.msRow===i;

@@ -11,7 +11,7 @@ export function drawSelect(){
   drawSky();
   ctx.fillStyle='rgba(12,10,26,0.62)';ctx.fillRect(0,0,W,H);
   const pickingP2=game.selPhase===1;
-  const title=pickingP2?'PLAYER 2 — CHOOSE YOUR FIGHTER':
+  const title=pickingP2?(game.mode==='train'?'CHOOSE THE TRAINING DUMMY':'PLAYER 2 — CHOOSE YOUR FIGHTER'):
     (game.mode==='2p'?'PLAYER 1 — CHOOSE YOUR FIGHTER':'CHOOSE YOUR FIGHTER');
   outlineText(title,W/2,64,38,pickingP2?'#8fd4ff':'#ffd24a','center',true);
   const curIdx=pickingP2?game.selIdx2:game.selIdx;
@@ -53,7 +53,9 @@ export function drawSelect(){
   ctx.textAlign='center';
   outlineText('FORMS: '+c.forms.map(f=>f.n).join(' → '),W/2,452,15,'#cfe8ff');
   outlineText('SIGNATURE: '+c.sig.n+' · BEAMS: '+c.beams.map(b=>b.n).join(' · ')+' · ULTIMATE: '+c.ult,W/2,478,15,'#ffd7a8');
-  if(pickingP2)
+  if(pickingP2&&game.mode==='train')
+    outlineText('← → pick the dummy · ENTER confirm · ESC back',W/2,H-60,18,'#e8e8f0');
+  else if(pickingP2)
     outlineText('P2: '+keyLabel(BINDS.p2.left)+' / '+keyLabel(BINDS.p2.right)+' select · '
       +keyLabel(BINDS.p2.punch)+' or ENTER confirm · ESC back',W/2,H-60,18,'#e8e8f0');
   else

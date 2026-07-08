@@ -47,6 +47,7 @@ export function drawArena(){
   worldEnd();
   drawSpeedlines();
   drawHUD();
+  if(game.mode==='train')outlineText('TRAINING',W/2,86,15,'#8fd4ff');
   drawAnnouncer();
   drawCallout();
   if(game.state==='clash'){

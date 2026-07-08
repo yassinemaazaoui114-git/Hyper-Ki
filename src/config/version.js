@@ -1,1 +1,1 @@
-export const VERSION='v11 · DIZZY STATE';
+export const VERSION='v12 · TRAINING MODE';

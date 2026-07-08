@@ -14,12 +14,13 @@ import {startMatch} from './match.js';
 
 export function stepTitle(){
   game.t++;
-  if(pressed.up){game.titleSel=(game.titleSel+2)%3;SFX.select();}
-  if(pressed.down){game.titleSel=(game.titleSel+1)%3;SFX.select();}
+  if(pressed.up){game.titleSel=(game.titleSel+3)%4;SFX.select();}
+  if(pressed.down){game.titleSel=(game.titleSel+1)%4;SFX.select();}
   if(pressed.start){
     SFX.confirm();game.t=0;
     if(game.titleSel===0){game.mode='1p';game.state='select';game.selPhase=0;}
     else if(game.titleSel===1){game.mode='2p';game.state='select';game.selPhase=0;}
+    else if(game.titleSel===2){game.mode='train';game.state='select';game.selPhase=0;}
     else{game.state='settings';game.setSel=0;}
   }
 }
@@ -31,7 +32,7 @@ export function stepSelect(){
     if(pressed.right){game.selIdx=(game.selIdx+1)%CHARS.length;SFX.select();}
     if(pressed.start){
       game.p1i=game.selIdx;SFX.confirm();
-      if(game.mode==='2p')game.selPhase=1;
+      if(game.mode==='2p'||game.mode==='train')game.selPhase=1;
       else{game.p2i=Math.floor(rand(0,CHARS.length));game.state='msettings';game.msRow=0;}
     }
     if(pressed.back){SFX.select();game.state='title';}
@@ -47,7 +48,7 @@ export function stepSelect(){
 }
 
 export function stepMSettings(){
-  const rows=game.mode==='1p'?3:2;
+  const rows=game.mode==='train'?1:game.mode==='1p'?3:2;
   if(pressed.up||pressed.up2){game.msRow=(game.msRow+rows-1)%rows;SFX.select();}
   if(pressed.down||pressed.down2){game.msRow=(game.msRow+1)%rows;SFX.select();}
   const d=((pressed.right||pressed.right2)?1:0)-((pressed.left||pressed.left2)?1:0);
@@ -58,7 +59,7 @@ export function stepMSettings(){
     else game.selDiff=clamp(game.selDiff+d,0,2);
   }
   if(pressed.start){game.diff=game.selDiff;SFX.confirm();startMatch();}
-  if(pressed.back){SFX.select();game.state='select';game.selPhase=game.mode==='2p'?1:0;}
+  if(pressed.back){SFX.select();game.state='select';game.selPhase=(game.mode==='2p'||game.mode==='train')?1:0;}
 }
 
 export function stepSettings(){

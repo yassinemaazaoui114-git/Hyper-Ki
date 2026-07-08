@@ -157,6 +157,7 @@ export function damage(o,dmg,opt){
 
 export function checkKO(loser){
   if(loser.hp>0)return false;
+  if(game.mode==='train'){loser.hp=1;return false;} // no KO in training
   const w=other(loser);
   game.winner=w;game.koMode='ko';game.state='ko';game.koT=0;
   loser.state='launched';loser.smashed=false;
