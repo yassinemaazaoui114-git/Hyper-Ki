@@ -3,6 +3,7 @@ import {ctx,W,H} from '../core/canvas.js';
 import {game} from '../core/state.js';
 import {CHARS} from '../data/characters.js';
 import {BINDS,keyLabel} from '../services/bindings.js';
+import {isSkinUnlocked} from '../services/profile.js';
 import {drawSky} from '../render/stageDraw.js';
 import {drawHead} from '../render/fighterDraw.js';
 import {outlineText} from '../render/text.js';
@@ -15,6 +16,7 @@ export function drawSelect(){
     (game.mode==='2p'?'PLAYER 1 — CHOOSE YOUR FIGHTER':'CHOOSE YOUR FIGHTER');
   outlineText(title,W/2,64,38,pickingP2?'#8fd4ff':'#ffd24a','center',true);
   const curIdx=pickingP2?game.selIdx2:game.selIdx;
+  const curSkin=pickingP2?game.skin2:game.skin1;
   const cw=230,chh=280,gap=32;
   const total=CHARS.length*cw+(CHARS.length-1)*gap;
   const x0=W/2-total/2;
@@ -32,11 +34,22 @@ export function drawSelect(){
       ctx.fillRect(x+8,y+8,44,24);
       outlineText('P1',x+30,y+20,15,'#141418');
     }
+    const unlocked=c.alt&&isSkinUnlocked(i);
+    const showAlt=sel&&curSkin===1&&unlocked;
+    if(unlocked)outlineText('★',x+cw-24,y+22,22,'#ffd24a');
     ctx.save();
     ctx.translate(x+cw/2,y+108);ctx.scale(3.6,3.6);
-    drawHead(c,c.hairC);
+    drawHead(c,showAlt?c.alt.hairC:c.hairC);
     ctx.restore();
     outlineText(c.name,x+cw/2,y+190,20,'#fff');
+    // color swatch (current skin's outfit palette)
+    if(sel){
+      const pal=showAlt?c.alt:c;
+      [pal.top,pal.pants,pal.belt].forEach((col,ci)=>{
+        ctx.fillStyle=col;ctx.fillRect(x+cw/2-33+ci*24,y+chh-16,20,10);
+        ctx.lineWidth=1.5;ctx.strokeStyle='#141418';ctx.strokeRect(x+cw/2-33+ci*24,y+chh-16,20,10);
+      });
+    }
     // stat pips
     const stats=[['POW',c.pow],['DEF',c.def],['SPD',c.spd]];
     stats.forEach((s,si)=>{
@@ -51,6 +64,10 @@ export function drawSelect(){
   }
   const c=CHARS[curIdx];
   ctx.textAlign='center';
+  if(c.alt&&isSkinUnlocked(curIdx))
+    outlineText('↑↓ COLOR: '+(curSkin===1?'ALT ★':'DEFAULT'),W/2,426,17,'#ffd24a','center',true);
+  else
+    outlineText('★ clear the arcade ladder to unlock an alt color',W/2,426,14,'#8fa8c8');
   outlineText('FORMS: '+c.forms.map(f=>f.n).join(' → '),W/2,452,15,'#cfe8ff');
   outlineText('SIGNATURE: '+c.sig.n+' · BEAMS: '+c.beams.map(b=>b.n).join(' · ')+' · ULTIMATE: '+c.ult,W/2,478,15,'#ffd7a8');
   if(pickingP2&&game.mode==='train')

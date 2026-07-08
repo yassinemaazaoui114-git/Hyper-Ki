@@ -2,10 +2,10 @@
 import {CHARS} from '../data/characters.js';
 import {POSES,clonePose} from '../data/poses.js';
 
-export function makeFighter(ci,x,face,isCPU){
+export function makeFighter(ci,x,face,isCPU,skin){
   const c=CHARS[ci];
   return {
-    char:c,ci,x,y:0,vx:0,vy:0,face,isCPU,scl:c.scale||1,
+    char:c,ci,x,y:0,vx:0,vy:0,face,isCPU,scl:c.scale||1,skin:skin||0,
     maxhp:900*c.def,hp:900*c.def,gray:0,ki:2,
     form:0,hyper:false,
     state:'idle',animT:0,atk:null,atkT:0,atkHit:false,chain:null,

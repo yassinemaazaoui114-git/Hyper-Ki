@@ -14,10 +14,10 @@ export function drawVS(){
   ctx.fillStyle='rgba(255,127,36,0.25)';
   ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(W*0.58,0);ctx.lineTo(W*0.42,H);ctx.lineTo(0,H);ctx.closePath();ctx.fill();
   ctx.save();ctx.translate(300,H*0.78);ctx.scale(1.9,1.9);
-  drawFighterView(fakeFighter(game.p1i,0,'idle',1));
+  drawFighterView(fakeFighter(game.p1i,0,'idle',1,game.skin1));
   ctx.restore();
   ctx.save();ctx.translate(W-300,H*0.78);ctx.scale(1.9,1.9);
-  drawFighterView(fakeFighter(game.p2i,0,'idle',-1));
+  drawFighterView(fakeFighter(game.p2i,0,'idle',-1,game.skin2));
   ctx.restore();
   outlineText(CHARS[game.p1i].name,300,120,44,'#ffd24a','center',true);
   outlineText(CHARS[game.p2i].name,W-300,120,44,'#c9a6ff','center',true);

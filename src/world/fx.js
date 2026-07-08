@@ -36,7 +36,7 @@ export function updateParticles(){
 }
 
 export function addGhost(f,tint){
-  game.ghosts.push({x:f.x,y:f.y,face:f.face,scl:f.scl,form:f.form,char:f.char,
+  game.ghosts.push({x:f.x,y:f.y,face:f.face,scl:f.scl,form:f.form,char:f.char,skin:f.skin,
     state:'idle',pose:clonePose(f.pose),t:0,tint,frame:f.frame,flashT:0,sidestepT:0,invuln:0});
 }
 

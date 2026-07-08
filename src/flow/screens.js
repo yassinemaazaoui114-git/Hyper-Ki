@@ -8,8 +8,7 @@ import {STAGES} from '../data/stages.js';
 import {TIMES} from '../data/modes.js';
 import {keys,pressed,setCaptureKey} from '../input/keyboard.js';
 import {ACTIONS,assignBind,resetBinds} from '../services/bindings.js';
-import {recordPick} from '../services/profile.js';
-import {resetProfile} from '../services/profile.js';
+import {recordPick,resetProfile,isSkinUnlocked} from '../services/profile.js';
 import {SETTINGS,saveSettings,applySound} from '../services/settings.js';
 import {SFX} from '../services/audio.js';
 import {startMatch,startLadder} from './match.js';
@@ -19,7 +18,7 @@ export function stepTitle(){
   if(pressed.up){game.titleSel=(game.titleSel+4)%5;SFX.select();}
   if(pressed.down){game.titleSel=(game.titleSel+1)%5;SFX.select();}
   if(pressed.start){
-    SFX.confirm();game.t=0;game.ladder=null;
+    SFX.confirm();game.t=0;game.ladder=null;game.skin1=0;game.skin2=0;
     if(game.titleSel===0){game.mode='1p';game.state='select';game.selPhase=0;}
     else if(game.titleSel===1){game.mode='2p';game.state='select';game.selPhase=0;}
     else if(game.titleSel===2){game.mode='train';game.state='select';game.selPhase=0;}
@@ -31,8 +30,9 @@ export function stepTitle(){
 export function stepSelect(){
   game.t++;
   if(game.selPhase===0){
-    if(pressed.left){game.selIdx=(game.selIdx+CHARS.length-1)%CHARS.length;SFX.select();}
-    if(pressed.right){game.selIdx=(game.selIdx+1)%CHARS.length;SFX.select();}
+    if(pressed.left){game.selIdx=(game.selIdx+CHARS.length-1)%CHARS.length;game.skin1=0;SFX.select();}
+    if(pressed.right){game.selIdx=(game.selIdx+1)%CHARS.length;game.skin1=0;SFX.select();}
+    if((pressed.up||pressed.down)&&isSkinUnlocked(game.selIdx)){game.skin1=game.skin1?0:1;SFX.select();}
     if(pressed.start){
       game.p1i=game.selIdx;SFX.confirm();
       if(game.mode==='2p'||game.mode==='train')game.selPhase=1;
@@ -40,8 +40,9 @@ export function stepSelect(){
     }
     if(pressed.back){SFX.select();game.state='title';}
   }else{
-    if(pressed.left2||pressed.left){game.selIdx2=(game.selIdx2+CHARS.length-1)%CHARS.length;SFX.select();}
-    if(pressed.right2||pressed.right){game.selIdx2=(game.selIdx2+1)%CHARS.length;SFX.select();}
+    if(pressed.left2||pressed.left){game.selIdx2=(game.selIdx2+CHARS.length-1)%CHARS.length;game.skin2=0;SFX.select();}
+    if(pressed.right2||pressed.right){game.selIdx2=(game.selIdx2+1)%CHARS.length;game.skin2=0;SFX.select();}
+    if((pressed.up||pressed.down||pressed.up2||pressed.down2)&&isSkinUnlocked(game.selIdx2)){game.skin2=game.skin2?0:1;SFX.select();}
     if(pressed.start||pressed.punch2){
       game.p2i=game.selIdx2;SFX.confirm();
       game.state='msettings';game.msRow=0;

@@ -8,7 +8,7 @@ import {humanIntent} from '../input/intents.js';
 import {aiUpdate} from '../ai/cpu.js';
 import {dummyIntent,DUMMY_BEHAVIORS} from '../ai/dummy.js';
 import {recordInput} from '../world/inputlog.js';
-import {recordResult,recordLadderClear,recordPick} from '../services/profile.js';
+import {recordResult,recordLadderClear,recordPick,unlockSkin} from '../services/profile.js';
 import {makeFighter} from '../world/fighter.js';
 import {updateFighter} from '../world/fighterUpdate.js';
 import {updatePose} from '../world/animation.js';
@@ -19,8 +19,8 @@ import {POSES,clonePose} from '../data/poses.js';
 import {SFX,stopChargeHum,tone,audioTime} from '../services/audio.js';
 
 export function startMatch(){
-  game.p1=makeFighter(game.p1i,-260,1,false);
-  game.p2=makeFighter(game.p2i,260,-1,game.mode!=='2p');
+  game.p1=makeFighter(game.p1i,-260,1,false,game.skin1);
+  game.p2=makeFighter(game.p2i,260,-1,game.mode!=='2p',game.skin2);
   game.projs.length=0;game.beams.length=0;game.parts.length=0;game.ghosts.length=0;
   game.dmgTexts.length=0;
   game.inputLog.length=0;game.frameAdv=null;
@@ -184,7 +184,7 @@ export function stepVictory(){
         game.diff=Math.min(2,game.ladder.baseDiff+game.ladder.idx);
         startMatch();
       }else{ // ladder cleared, or defeated -> back to title
-        if(won&&!more)recordLadderClear();
+        if(won&&!more){recordLadderClear();unlockSkin(game.p1i);}
         game.ladder=null;game.state='title';game.titleSel=0;game.t=0;
       }
     }

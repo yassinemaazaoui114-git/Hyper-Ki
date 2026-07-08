@@ -84,7 +84,14 @@ export function drawFighterView(v){
   ctx.translate(v.x,-v.y);
   ctx.scale(v.face*v.scl,v.scl);
   if(v.state==='down'){ctx.translate(-14,-8);ctx.rotate(Math.PI/2-0.22);}
-  const hairC=form.hairC||c.hairC;
+  // alternate unlockable palette (outfit + hair recolor; skin tone unchanged)
+  const alt=(v.skin===1&&c.alt)?c.alt:null;
+  const topC=alt?alt.top:c.top;
+  const pantsC=alt?alt.pants:c.pants;
+  const beltC=alt?alt.belt:c.belt;
+  const capeC=(alt&&alt.cape)?alt.cape:c.cape;
+  const hairBase=(alt&&alt.hairC)?alt.hairC:c.hairC;
+  const hairC=form.hairC||hairBase;
   const hipY=-74;
   const nx=Math.sin(p.lean)*54,ny=hipY-Math.cos(p.lean)*54;
   const shX=nx*0.92,shY=ny+10;
@@ -96,17 +103,17 @@ export function drawFighterView(v){
     ctx.quadraticCurveTo(-46,hipY-20,-52+wv,hipY+44);
     ctx.quadraticCurveTo(-28,hipY+38,-14,hipY+8);
     ctx.closePath();
-    ctx.fillStyle=TINT||c.cape;ctx.fill();
+    ctx.fillStyle=TINT||capeC;ctx.fill();
     ctx.lineWidth=3;ctx.strokeStyle='#141418';ctx.stroke();
   }
   // back arm + back leg (darker)
-  let e=limb(shX,shY,p.ba[0],p.ba[1],26,24,12,shade(c.top,-32));
+  let e=limb(shX,shY,p.ba[0],p.ba[1],26,24,12,shade(topC,-32));
   circleO(e[0],e[1],7,shade(c.skin,-28));
-  e=limb(0,hipY,p.bl[0],p.bl[1],35,34,14,shade(c.pants,-32));
+  e=limb(0,hipY,p.bl[0],p.bl[1],35,34,14,shade(pantsC,-32));
   circleO(e[0],e[1],8,'#26262e');
   // torso + belt
-  strokePath([[0,hipY],[nx,ny]],32,c.top);
-  ctx.fillStyle=TINT||c.belt;
+  strokePath([[0,hipY],[nx,ny]],32,topC);
+  ctx.fillStyle=TINT||beltC;
   ctx.fillRect(-15,hipY-7,30,12);
   ctx.lineWidth=3;ctx.strokeStyle='#141418';
   ctx.strokeRect(-15,hipY-7,30,12);
@@ -116,9 +123,9 @@ export function drawFighterView(v){
   drawHead(c,hairC);
   ctx.restore();
   // front leg + front arm
-  e=limb(0,hipY,p.fl[0],p.fl[1],35,34,14,c.pants);
+  e=limb(0,hipY,p.fl[0],p.fl[1],35,34,14,pantsC);
   circleO(e[0],e[1],8,'#33333d');
-  e=limb(shX,shY,p.fa[0],p.fa[1],26,24,12,c.top);
+  e=limb(shX,shY,p.fa[0],p.fa[1],26,24,12,topC);
   circleO(e[0],e[1],7,c.skin);
   ctx.restore();
   TINT=null;
@@ -154,8 +161,8 @@ export function drawAura(f){
 }
 
 /** Static posed fighter for menus and cinematics. */
-export function fakeFighter(ci,form,poseName,face){
-  return {char:CHARS[ci],form:Math.min(form,CHARS[ci].forms.length-1),
+export function fakeFighter(ci,form,poseName,face,skin){
+  return {char:CHARS[ci],form:Math.min(form,CHARS[ci].forms.length-1),skin:skin||0,
     pose:clonePose(POSES[poseName]),face,x:0,y:0,scl:1,state:'idle',
     frame:game.frame,flashT:0,sidestepT:0,invuln:0};
 }

@@ -1,1 +1,1 @@
-export const VERSION='v18 · PLAYER PROFILE';
+export const VERSION='v19 · UNLOCKABLE COLORS';
