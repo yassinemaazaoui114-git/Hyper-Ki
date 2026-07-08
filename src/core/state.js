@@ -7,7 +7,7 @@ export const game={
   // roster picks & fighters
   p1i:0,p2i:1,p1:null,p2:null,
   // menus
-  mode:'1p',selIdx:0,selIdx2:1,selPhase:0,selDiff:1,titleSel:0,dummyBehavior:0,
+  mode:'1p',selIdx:0,selIdx2:1,selPhase:0,selDiff:1,titleSel:0,dummyBehavior:0,ladder:null,
   stageI:0,timeIdx:2,timeLimit:99,msRow:0,setSel:0,pauseSel:0,
   rbRow:0,rbCol:0,rbWait:false,pauseView:0,
   // world entities

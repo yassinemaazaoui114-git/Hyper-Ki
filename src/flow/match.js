@@ -34,6 +34,16 @@ export function startMatch(){
   game.state='vs';game.t=0;
 }
 
+/* Arcade ladder: fight every other character in order, difficulty ramping. */
+export function startLadder(){
+  const q=[];
+  for(let i=0;i<CHARS.length;i++)if(i!==game.p1i)q.push(i);
+  game.ladder={queue:q,idx:0,baseDiff:game.selDiff};
+  game.p2i=q[0];
+  game.diff=game.selDiff;
+  startMatch();
+}
+
 export function stepReady(){
   game.t++;
   updatePose(game.p1);updatePose(game.p2);
@@ -117,7 +127,7 @@ export function stepPauseMenu(){
     else if(game.pauseSel===1){SFX.confirm();game.pauseView=1;}
     else if(train&&game.pauseSel===2){game.dummyBehavior=(game.dummyBehavior+1)%DUMMY_BEHAVIORS.length;SFX.select();}
     else if(game.pauseSel===quitIdx){
-      SFX.confirm();game.paused=false;
+      SFX.confirm();game.paused=false;game.ladder=null;
       stopChargeHum(game.p1);stopChargeHum(game.p2);
       game.state='select';game.selPhase=0;
     }
@@ -160,6 +170,23 @@ export function stepKO(){
 export function stepVictory(){
   game.t++;
   updatePose(game.winner);
+  if(game.ladder){
+    const won=game.winner===game.p1;
+    const more=game.ladder.idx<game.ladder.queue.length-1;
+    if(pressed.start){
+      SFX.confirm();
+      if(won&&more){ // advance to the next, harder opponent
+        game.ladder.idx++;
+        game.p2i=game.ladder.queue[game.ladder.idx];
+        game.diff=Math.min(2,game.ladder.baseDiff+game.ladder.idx);
+        startMatch();
+      }else{ // ladder cleared, or defeated -> back to title
+        game.ladder=null;game.state='title';game.titleSel=0;game.t=0;
+      }
+    }
+    if(pressed.back){SFX.select();game.ladder=null;game.state='select';game.selPhase=0;}
+    return;
+  }
   if(pressed.start){SFX.confirm();startMatch();}
   if(pressed.back){SFX.select();game.state='select';game.selPhase=0;}
 }

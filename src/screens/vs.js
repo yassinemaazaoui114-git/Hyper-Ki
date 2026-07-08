@@ -25,6 +25,8 @@ export function drawVS(){
   ctx.save();ctx.translate(W/2,H/2);ctx.scale(pop,pop);
   outlineText('VS',0,0,120,'#ff5030','center',true);
   ctx.restore();
+  if(game.ladder)
+    outlineText('ARCADE LADDER · MATCH '+(game.ladder.idx+1)+' / '+game.ladder.queue.length,W/2,H-86,22,'#ffd24a','center',true);
   const tl=game.timeLimit===Infinity?'∞':game.timeLimit+'s';
   const modeTxt=game.mode==='train'?'TRAINING':game.mode==='2p'?'2P VERSUS':DIFF[game.diff].name;
   outlineText(modeTxt+' · '+STAGES[game.stageI].name+' · TIME '+tl,W/2,H-50,18,'#e8e8f0');

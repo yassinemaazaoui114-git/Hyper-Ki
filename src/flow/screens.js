@@ -10,14 +10,14 @@ import {pressed,setCaptureKey} from '../input/keyboard.js';
 import {ACTIONS,assignBind,resetBinds} from '../services/bindings.js';
 import {SETTINGS,saveSettings,applySound} from '../services/settings.js';
 import {SFX} from '../services/audio.js';
-import {startMatch} from './match.js';
+import {startMatch,startLadder} from './match.js';
 
 export function stepTitle(){
   game.t++;
   if(pressed.up){game.titleSel=(game.titleSel+3)%4;SFX.select();}
   if(pressed.down){game.titleSel=(game.titleSel+1)%4;SFX.select();}
   if(pressed.start){
-    SFX.confirm();game.t=0;
+    SFX.confirm();game.t=0;game.ladder=null;
     if(game.titleSel===0){game.mode='1p';game.state='select';game.selPhase=0;}
     else if(game.titleSel===1){game.mode='2p';game.state='select';game.selPhase=0;}
     else if(game.titleSel===2){game.mode='train';game.state='select';game.selPhase=0;}
@@ -58,7 +58,11 @@ export function stepMSettings(){
     else if(game.msRow===1)game.timeIdx=(game.timeIdx+d+TIMES.length)%TIMES.length;
     else game.selDiff=clamp(game.selDiff+d,0,2);
   }
-  if(pressed.start){game.diff=game.selDiff;SFX.confirm();startMatch();}
+  if(pressed.start){
+    SFX.confirm();
+    if(game.mode==='1p')startLadder();       // arcade = the ladder
+    else{game.diff=game.selDiff;startMatch();}
+  }
   if(pressed.back){SFX.select();game.state='select';game.selPhase=(game.mode==='2p'||game.mode==='train')?1:0;}
 }
 
