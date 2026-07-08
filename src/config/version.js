@@ -1,1 +1,1 @@
-export const VERSION='v17 · ARCADE LADDER';
+export const VERSION='v18 · PLAYER PROFILE';

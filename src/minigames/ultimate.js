@@ -7,6 +7,7 @@ import {atkMult,defMult,auraColor} from '../world/fighter.js';
 import {damage,checkKO} from '../world/combat.js';
 import {shake} from '../world/camera.js';
 import {SFX} from '../services/audio.js';
+import {recordUltimate} from '../services/profile.js';
 
 export const ROUND_OPTS=[['left','up','right','down'],['left','up','right'],['left','right']];
 
@@ -69,6 +70,7 @@ export function stepUlt(){
       damage(u.def,dmg,{gray:0});
       u.def.flashT=12;
       game.flash=9;SFX.ko();
+      if(!u.att.isCPU&&game.mode!=='train')recordUltimate();
     }
     if(u.t>=110){
       const u2=game.ult;game.ult=null;

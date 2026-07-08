@@ -28,17 +28,17 @@ export function drawTitle(){
   ctx.restore();
   outlineText('A BUDOKAI-STYLE 2.5D FIGHTER',W/2,268,18,'#cfe8ff');
   // main menu
-  const items=['ARCADE  ·  VS CPU','VERSUS  ·  2 PLAYERS','TRAINING  ·  PRACTICE','SETTINGS'];
+  const items=['ARCADE  ·  VS CPU','VERSUS  ·  2 PLAYERS','TRAINING  ·  PRACTICE','RECORDS','SETTINGS'];
   items.forEach((s,i)=>{
     const sel=i===game.titleSel;
-    const y=338+i*50;
+    const y=330+i*48;
     if(sel){
       ctx.fillStyle='rgba(255,210,74,0.14)';
-      ctx.fillRect(W/2-280,y-22,560,44);
+      ctx.fillRect(W/2-280,y-21,560,42);
     }
-    outlineText((sel?'▶  ':'')+s+(sel?'  ◀':''),W/2,y,sel?28:22,sel?'#ffd24a':'#c8c8dc','center',sel);
+    outlineText((sel?'▶  ':'')+s+(sel?'  ◀':''),W/2,y,sel?27:21,sel?'#ffd24a':'#c8c8dc','center',sel);
   });
-  outlineText('↑ ↓ select  ·  ENTER confirm',W/2,560,16,'#e8e8f0');
+  outlineText('↑ ↓ select  ·  ENTER confirm',W/2,562,16,'#e8e8f0');
   const bl=p=>['left','right','up','down'].map(a=>keyLabel(BINDS[p][a])).join(' ')
     +' + '+['punch','kick','blast','charge','guard','transform','ult'].map(a=>keyLabel(BINDS[p][a])).join(' ');
   outlineText('P1: '+bl('p1')+'        P2: '+bl('p2'),W/2,614,15,'#bcd4ec');

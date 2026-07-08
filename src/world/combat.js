@@ -8,6 +8,7 @@ import {atkMult,defMult,auraColor} from './fighter.js';
 import {addGhost,burst,sparks,addPart} from './fx.js';
 import {shake} from './camera.js';
 import {SFX,stopChargeHum} from '../services/audio.js';
+import {recordResult} from '../services/profile.js';
 
 export function startAttack(f,name){
   f.state='attack';f.atk=name;f.atkT=0;f.atkHit=false;f.chain=null;SFX.swing();
@@ -167,6 +168,7 @@ export function checkKO(loser){
   const w=other(loser);
   game.winner=w;game.koMode='ko';game.state='ko';game.koT=0;
   game.koDramatic=big;
+  if(game.mode==='1p')recordResult(w===game.p1);
   loser.state='launched';loser.smashed=false;
   loser.vy=Math.max(loser.vy,12);loser.y=Math.max(loser.y,0.01);
   loser.vx=(loser.x<w.x?-1:1)*9;

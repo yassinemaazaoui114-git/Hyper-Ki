@@ -8,6 +8,7 @@ import {humanIntent} from '../input/intents.js';
 import {aiUpdate} from '../ai/cpu.js';
 import {dummyIntent,DUMMY_BEHAVIORS} from '../ai/dummy.js';
 import {recordInput} from '../world/inputlog.js';
+import {recordResult,recordLadderClear,recordPick} from '../services/profile.js';
 import {makeFighter} from '../world/fighter.js';
 import {updateFighter} from '../world/fighterUpdate.js';
 import {updatePose} from '../world/animation.js';
@@ -41,6 +42,7 @@ export function startLadder(){
   game.ladder={queue:q,idx:0,baseDiff:game.selDiff};
   game.p2i=q[0];
   game.diff=game.selDiff;
+  recordPick(game.p1i);
   startMatch();
 }
 
@@ -139,6 +141,7 @@ export function timeUp(){
   const r1=p1.hp/p1.maxhp,r2=p2.hp/p2.maxhp;
   game.winner=r1>=r2?p1:p2;
   game.koMode='time';game.state='ko';game.koT=0;game.koDramatic=false;
+  if(game.mode==='1p')recordResult(game.winner===p1);
   setAnn('TIME UP!',999,'#ffd24a');SFX.announce();
   stopChargeHum(p1);stopChargeHum(p2);
 }
@@ -181,6 +184,7 @@ export function stepVictory(){
         game.diff=Math.min(2,game.ladder.baseDiff+game.ladder.idx);
         startMatch();
       }else{ // ladder cleared, or defeated -> back to title
+        if(won&&!more)recordLadderClear();
         game.ladder=null;game.state='title';game.titleSel=0;game.t=0;
       }
     }
